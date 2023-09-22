@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import Searchbar from "./components/Searchbar/Searchbar";
@@ -8,92 +8,71 @@ import { requestToApi } from "./serveces/requestToApi";
 
 export const IMG_PER_PAGE = 12;
 const LOADINGDEFAULTPAGE = 1;
-// test
-class App extends Component {
-  state = {
-    pictures: [],
-    isLoarding: false,
-    searchValue: "",
-    page: "",
+let searchValue;
+
+const App = () => {
+  const [pictures, setPictures] = useState([]);
+  const [isLoarding, setLoding] = useState(false);
+  // const [searchValue, setSearchValue] = useState("");
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    console.log("render");
+  }, [pictures]);
+
+  const setDefaultAppState = () => {
+    setPictures([]);
+    setPage(1);
   };
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (
-      JSON.stringify(nextState.pictures) !== JSON.stringify(this.state.pictures)
-    ) {
-      this.setState((prevState) => ({ page: prevState.page + 1 }));
-      console.log("updateApp");
-      return true;
-    }
-    return false;
-  }
-  //set default state after submit and unmount component ImageGalleryItem
-  setDefaultAppState = () => {
-    this.setState({ pictures: [] });
-    this.setState({ page: 1 });
-  };
-
-  submit = async (ev) => {
+  const submit = async (ev) => {
     ev.preventDefault();
-    this.setDefaultAppState();
-    if (this.state.searchValue) {
-      this.setState({ isLoarding: true });
-      await this.loard(LOADINGDEFAULTPAGE);
+    setDefaultAppState();
+    if (searchValue) {
+      setLoding(true);
+      await loard(LOADINGDEFAULTPAGE);
     }
     return;
   };
 
-  loard = async (page) => {
-    const responce = await requestToApi(
-      page,
-      this.state.searchValue,
-      this.isLoaded
-    );
-
-    this.setState((prevState) => ({
-      pictures: [...prevState.pictures, ...responce.data.hits],
-    }));
+  const loard = async (page) => {
+    setPage(page);
+    const responce = await requestToApi(page, searchValue, isLoaded);
+    setPictures((prevState) => {
+      const addedPicturesArray = [...prevState, ...responce.data.hits];
+      return addedPicturesArray;
+    });
   };
 
-  //hide loager
-  isLoaded = () => {
-    this.setState({ isLoarding: false });
+  const isLoaded = () => {
+    setLoding(false);
   };
 
-  getSearchValue = (ev) => {
-    this.setState({ searchValue: ev.target.value });
+  const getSearchValue = (ev) => {
+    return (searchValue = ev.target.value);
   };
 
-  render() {
-    const { pictures, isLoarding, page } = this.state;
-    return (
-      <div className="App">
-        {isLoarding ? (
-          <>
-            {" "}
-            <Searchbar />
-            <Loader />
-          </>
-        ) : (
-          <>
-            {" "}
-            <Searchbar onSubmit={this.submit} onChange={this.getSearchValue} />
-            <ImageGallery
-              pictures={pictures}
-              setDefaultAppState={this.setDefaultAppState}
-            />
-            {pictures.length > 0 && (
-              <Button
-                onClick={() => {
-                  this.loard(page + 1);
-                }}
-              />
-            )}
-          </>
-        )}
-      </div>
-    );
-  }
-}
+  return (
+    <div className="App">
+      {isLoarding ? (
+        <>
+          {" "}
+          <Searchbar />
+          <Loader />
+        </>
+      ) : (
+        <>
+          {" "}
+          <Searchbar onSubmit={submit} onChange={getSearchValue} />
+          <ImageGallery
+            pictures={pictures}
+            setDefaultAppState={setDefaultAppState}
+          />
+          {pictures.length > 0 && <Button onClick={() => loard(page + 1)} />}
+        </>
+      )}
+    </div>
+  );
+};
 
 export default App;
