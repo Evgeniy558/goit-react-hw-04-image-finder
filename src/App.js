@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./App.css";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import Searchbar from "./components/Searchbar/Searchbar";
@@ -12,40 +12,35 @@ let searchValue;
 
 const App = () => {
   const [pictures, setPictures] = useState([]);
-  const [isLoarding, setLoding] = useState(false);
-  // const [searchValue, setSearchValue] = useState("");
+  const [isLoading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-
-  useEffect(() => {
-    console.log("render");
-  }, [pictures]);
 
   const setDefaultAppState = () => {
     setPictures([]);
-    setPage(1);
+    setPage(LOADINGDEFAULTPAGE);
   };
 
   const submit = async (ev) => {
     ev.preventDefault();
     setDefaultAppState();
     if (searchValue) {
-      setLoding(true);
-      await loard(LOADINGDEFAULTPAGE);
+      setLoading(true);
+      await load(LOADINGDEFAULTPAGE);
     }
     return;
   };
 
-  const loard = async (page) => {
+  const load = async (page) => {
     setPage(page);
     const responce = await requestToApi(page, searchValue, isLoaded);
     setPictures((prevState) => {
-      const addedPicturesArray = [...prevState, ...responce.data.hits];
-      return addedPicturesArray;
+      const aditedPicturesArray = [...prevState, ...responce.data.hits];
+      return aditedPicturesArray;
     });
   };
 
   const isLoaded = () => {
-    setLoding(false);
+    setLoading(false);
   };
 
   const getSearchValue = (ev) => {
@@ -54,7 +49,7 @@ const App = () => {
 
   return (
     <div className="App">
-      {isLoarding ? (
+      {isLoading ? (
         <>
           {" "}
           <Searchbar />
@@ -64,11 +59,8 @@ const App = () => {
         <>
           {" "}
           <Searchbar onSubmit={submit} onChange={getSearchValue} />
-          <ImageGallery
-            pictures={pictures}
-            setDefaultAppState={setDefaultAppState}
-          />
-          {pictures.length > 0 && <Button onClick={() => loard(page + 1)} />}
+          <ImageGallery pictures={pictures} />
+          {pictures.length > 0 && <Button onClick={() => load(page + 1)} />}
         </>
       )}
     </div>

@@ -1,41 +1,36 @@
-import { Component } from "react";
+import { useState } from "react";
 import css from "./ImageGalleryItem.module.css";
 import Modal from "../Modal/Modal";
 import PropTypes from "prop-types";
-class ImageGalleryItem extends Component {
-  state = { modalIsVisible: true };
 
-  openModal = () => {
-    console.log("click Foto");
-    this.setState({ modalIsVisible: false });
+const ImageGalleryItem = ({ id, webformatURL, largeImageURL }) => {
+  const [modalIsVisible, setmodalIsVisible] = useState(true);
+
+  const openModal = () => {
+    setmodalIsVisible(false);
   };
 
-  closeModal = () => {
-    console.log("click Background ");
-    this.setState({ modalIsVisible: true });
+  const closeModal = () => {
+    setmodalIsVisible(true);
   };
 
-  render() {
-    const { modalIsVisible } = this.state;
-    const { id, webformatURL, largeImageURL } = this.props;
-    return (
-      <>
-        {!modalIsVisible && (
-          <Modal largeImageURL={largeImageURL} onClick={this.closeModal} />
-        )}
-        <li key={id} className={css.ImageGalleryItem} onClick={this.openModal}>
-          {" "}
-          <img
-            src={webformatURL}
-            alt=""
-            className={css.ImageGalleryItem_image}
-            loading="lazy"
-          />
-        </li>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      {!modalIsVisible && (
+        <Modal largeImageURL={largeImageURL} onClick={closeModal} />
+      )}
+      <li key={id} className={css.ImageGalleryItem} onClick={openModal}>
+        {" "}
+        <img
+          src={webformatURL}
+          alt=""
+          className={css.ImageGalleryItem_image}
+          loading="lazy"
+        />
+      </li>
+    </>
+  );
+};
 ImageGalleryItem.propTypes = {
   id: PropTypes.number.isRequired,
   webformatURL: PropTypes.string.isRequired,
