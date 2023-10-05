@@ -20,7 +20,6 @@ const ImageGalleryItem = ({ id, webformatURL, largeImageURL }) => {
         <Modal largeImageURL={largeImageURL} onClick={closeModal} />
       )}
       <li key={id} className={css.ImageGalleryItem} onClick={openModal}>
-        {" "}
         <img
           src={webformatURL}
           alt=""

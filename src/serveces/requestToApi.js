@@ -1,6 +1,6 @@
 import axios from "axios";
-import { IMG_PER_PAGE } from "../App";
 
+const IMG_PER_PAGE = 12;
 export const requestToApi = async (page, searchValue, isLoaded) => {
   try {
     const responce = await axios.get("https://pixabay.com/api/", {
@@ -14,10 +14,8 @@ export const requestToApi = async (page, searchValue, isLoaded) => {
         per_page: IMG_PER_PAGE,
       },
     });
-    return responce;
+    return responce.data;
   } catch (error) {
-    console.error(error);
-  } finally {
-    isLoaded();
+    throw new Error(`Error ${error}`);
   }
 };
