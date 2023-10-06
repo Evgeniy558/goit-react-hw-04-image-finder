@@ -64,22 +64,13 @@ const App = () => {
 
   return (
     <div className="App">
-      {isLoading ? (
-        <>
-          <Searchbar />
-          <Loader />
-        </>
-      ) : (
-        <>
-          <Searchbar onSubmit={submit} onChange={getSearchValue} />
-          <ImageGallery pictures={pictures} />
-          {pictures.length > 0 && (
-            <Button isHidden={isHidden} onClick={() => renderPictures(page)} />
-          )}
-        </>
+      <Searchbar onSubmit={submit} onChange={getSearchValue} />
+      <ImageGallery pictures={pictures} />{" "}
+      {pictures.length > 0 && (
+        <Button isHidden={isHidden} onClick={() => renderPictures(page)} />
       )}
+      {isLoading ? <Loader /> : null}
     </div>
   );
 };
-
 export default App;
