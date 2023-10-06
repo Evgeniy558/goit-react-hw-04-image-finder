@@ -62,10 +62,6 @@ const App = () => {
     setLoading(false);
   };
 
-  // const getSearchValue = (searchValue) => {
-  //   setSearchValue(searchValue);
-  // };
-
   return (
     <div className="App">
       <Searchbar onSubmit={submit} />

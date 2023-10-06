@@ -1,8 +1,6 @@
 import css from "./Button.module.css";
 import PropTypes from "prop-types";
-const Button = (props) => {
-  const { onClick, isHidden } = props;
-  console.log("Props:", props);
+const Button = ({ onClick, isHidden }) => {
   const hiddenStyle = isHidden ? css["isHidden"] : "";
   return (
     <button
