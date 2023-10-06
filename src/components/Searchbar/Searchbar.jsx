@@ -1,6 +1,6 @@
 import css from "./Searchbar.module.css";
 import PropTypes from "prop-types";
-const Searchbar = ({ onSubmit, onChange }) => {
+const Searchbar = ({ onSubmit }) => {
   return (
     <header className={css.Searchbar}>
       <form className={css.SearchForm} onSubmit={onSubmit}>
@@ -12,7 +12,6 @@ const Searchbar = ({ onSubmit, onChange }) => {
           type="text"
           className={css.SearchForm_input}
           placeholder="Search images and photos"
-          onChange={onChange}
         />
       </form>
     </header>

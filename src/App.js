@@ -23,23 +23,27 @@ const App = () => {
   };
 
   const submit = async (ev) => {
+    setSearchValue(ev.target.elements.searchValue.value);
     ev.preventDefault();
     setDefaultAppState();
-    if (searchValue) {
-      await renderPictures(LOADINGDEFAULTPAGE);
+    if (ev.target.elements.searchValue.value) {
+      await renderPictures(
+        LOADINGDEFAULTPAGE,
+        ev.target.elements.searchValue.value
+      );
     }
     ev.target.reset();
     return;
   };
 
-  const renderPictures = async (page) => {
+  const renderPictures = async (page, searchValue) => {
     setLoading(true);
     try {
       const responce = await requestToApi(page, searchValue);
       setPictures((prevState) => {
         const pictures = [...prevState, ...responce.hits];
         if (responce.totalHits === pictures.length) {
-          setIsHidden({ isHidden: true });
+          setIsHidden(true);
         }
         return pictures;
       });
@@ -58,16 +62,19 @@ const App = () => {
     setLoading(false);
   };
 
-  const getSearchValue = (ev) => {
-    setSearchValue(ev.target.value);
-  };
+  // const getSearchValue = (searchValue) => {
+  //   setSearchValue(searchValue);
+  // };
 
   return (
     <div className="App">
-      <Searchbar onSubmit={submit} onChange={getSearchValue} />
+      <Searchbar onSubmit={submit} />
       <ImageGallery pictures={pictures} />{" "}
       {pictures.length > 0 && (
-        <Button isHidden={isHidden} onClick={() => renderPictures(page)} />
+        <Button
+          isHidden={isHidden}
+          onClick={() => renderPictures(page, searchValue)}
+        />
       )}
       {isLoading ? <Loader /> : null}
     </div>
